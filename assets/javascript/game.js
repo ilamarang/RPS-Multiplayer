@@ -5,7 +5,8 @@ var players = {
 
     name: "",
     loss: 0,
-    wins: 0
+    wins: 0,
+    selection: ""
 
 }
 var playerList = [];
@@ -23,7 +24,90 @@ firebase.initializeApp(config);
 // Create a variable to reference the database
 var database = firebase.database();
 
+database.ref().on("value", function(snapshot) {
 
+//Final Review and Game Reset
+
+if(snapshot.val().gameProgress.turn ===3 )
+{
+	    database.ref().child("/gameProgress/").update({
+
+        turn:0
+
+    });
+
+	var player1Choice = snapshot.val().players.player1.selection;
+	var player2Choice = snapshot.val().players.player2.selection;
+
+	console.log("Player1" + player1Choice + "Player2" + player2Choice + " Selected!");
+
+	if(player1Choice === player2Choice) {
+		$("#gameResultPanel").append("<h1> TIE !!</h1>");
+
+	} else if(player1Choice==="Rock" && player2Choice==="Scissors") {
+
+		setupWin("player1",snapshot);
+
+	} else if(player1Choice==="Rock" && player2Choice==="Paper") {
+
+		setupWin("player2",snapshot);
+
+	} else if(player1Choice==="Paper" && player2Choice==="Rock") {
+
+		setupWin("player1",snapshot);
+
+	} else if(player1Choice==="Paper" && player2Choice==="Scissors") {
+
+		setupWin("player2",snapshot);
+
+	} else if(player1Choice==="Scissors" && player2Choice==="Paper") {
+
+		setupWin("player1",snapshot);
+
+	} else if(player1Choice==="Scissors" && player2Choice==="Rock") {
+
+		setupWin("player2",snapshot);
+
+	}
+
+
+}
+
+});
+
+
+function setupWin (playerId,snapshot) {
+	console.log("Alright Here")
+	if(playerId==="player1") 
+	{
+		$("#gameResultPanel").append("<h1> "+  snapshot.val().players.player1.name + "  WINS!!</h1>");
+		    database.ref().child("/players/player1").update({
+
+        wins: snapshot.val().players.player1.wins + 1
+
+    });
+		    database.ref().child("/players/player2").update({
+
+        losses: snapshot.val().players.player2.losses + 1
+
+    });
+
+	}
+	else
+	{
+		$("#gameResultPanel").append("<h1> "+  snapshot.val().players.player2.name + "  WINS!!</h1>");	
+		database.ref().child("/players/player2").update({
+        wins: snapshot.val().players.player2.wins + 1
+
+    });
+		    database.ref().child("/players/player1").update({
+
+        losses: snapshot.val().players.player1.losses + 1
+
+    });
+	}
+	
+}
 
 database.ref("/players").on("value", function(snapshot) {
 
@@ -67,7 +151,10 @@ database.ref("/players").on("value", function(snapshot) {
                 });
             }
 
+        } else {
+        	
         }
+
 
 
     })
@@ -77,7 +164,9 @@ database.ref("/players").on("value", function(snapshot) {
 
         if (snapshot.val().turn == 1)
 
-        {
+        {	
+        	//Clear all defaults
+		
             //setup Player 1;
             console.log("My condition");
             if (whoAmI === "player1" && !buttonSet) {
@@ -86,16 +175,34 @@ database.ref("/players").on("value", function(snapshot) {
             }
 
         } else if (snapshot.val().turn == 2 && !buttonSet) {
+
             //setup Player 2;
+            //Clear all defaults
+		
+		
+
             if (whoAmI === "player2") {
                 buttonSet = true;
                 setupGame("player2");
             }
+        } else if (snapshot.val().turn == 0){
+
+        	buttonSet = false;
+        	
+        } else if(snapshot.val().turn == 4) {
+        	$("#gameResultPanel").empty();
+        	$("#playercurrentChoice").remove();
+        	database.ref().child("/gameProgress/").set({
+
+        	turn: 1
+	
+        });
         }
+        	
 
 
     })
-
+    
 
     function pushIfNew(obj) {
         for (var i = 0; i < playerList.length; i++) {
@@ -147,8 +254,8 @@ var setPlayer = function(playerId) {
 
         name: $("#playerNameText").val(),
         wins: 0,
-        losses: 0
-
+        losses: 0,
+        selection: ""
 
     });
 
@@ -156,6 +263,9 @@ var setPlayer = function(playerId) {
     presenceRef.onDisconnect().remove(function(err) {
 
     });
+
+    var turnRef = firebase.database().ref("/gameProgress");
+    turnRef.onDisconnect().update({turn:0});
 }
 
 function setupGame(playerId) {
@@ -180,22 +290,44 @@ $("#player1Panel").on("click", "button", function() {
     });
     var buttonText = $(this).text();
     $("#player1Panel .btn").remove();
-    $("#player1Panel").append("<h1> " + buttonText + "</h1>");
+    $("#player1Panel").append("<h1 id='playercurrentChoice'> " + buttonText + "</h1>");
+        database.ref().child("/players/player1").update({
 
+        selection: buttonText
+
+    });
 
 });
 
 
 $("#player2Panel").on("click", "button", function() {
     console.log("Button Click from Player 1");
-    database.ref().child("/gameProgress/").set({
-
-        turn: 0
-
-    });
+    
     var buttonText = $(this).text();
     $("#player2Panel .btn").remove();
-    $("#player2Panel").append("<h1> " + buttonText + "</h1>");
+    $("#player2Panel").append("<h1 id='playercurrentChoice'> " + buttonText + "</h1>");
+        database.ref().child("/players/player2").update({
+
+        selection: buttonText
+
+    });
+    
+    database.ref().child("/gameProgress/").set({
+
+        turn: 3
+
+    });
+ 	
+ 	//Reset Game after 5 seconds
+
+
 
 
 });
+
+function calculateResultReset() {
+	var player1Choice = "";
+	var player2Choice = "";
+
+	console.log("Calculating Result")
+}
