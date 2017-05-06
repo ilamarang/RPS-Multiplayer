@@ -71,6 +71,15 @@ if(snapshot.val().gameProgress.turn ===3 )
 	}
 
 
+} else if(snapshot.val().gameProgress.turn ===4 )
+{	
+	$("#gameResultPanel").empty();
+	$("#playercurrentChoice").remove();
+	database.ref().child("/gameProgress/").update({
+
+        turn:1
+
+    });
 }
 
 });
@@ -189,16 +198,7 @@ database.ref("/players").on("value", function(snapshot) {
 
         	buttonSet = false;
         	
-        } else if(snapshot.val().turn == 4) {
-        	$("#gameResultPanel").empty();
-        	$("#playercurrentChoice").remove();
-        	database.ref().child("/gameProgress/").set({
-
-        	turn: 1
-	
-        });
-        }
-        	
+        } 
 
 
     })
@@ -320,7 +320,17 @@ $("#player2Panel").on("click", "button", function() {
  	
  	//Reset Game after 5 seconds
 
+ 	 	setTimeout(function(){
 
+ 		database.ref().child("/gameProgress/").set({
+
+        turn: 4
+
+    });
+
+    }
+
+ 		,6000);
 
 
 });
