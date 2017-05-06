@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en-us">
+   <head>
+      <meta charset="UTF-8">
+      <title>RPS Multiplayer Game</title>
+      <!-- jQuery -->
+      <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+      <!-- Bootstrap CDN-->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <!-- Firebase Reference -->
+      <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
+      <link rel="stylesheet" type="text/css" href="./assets/css/custom.css">
+   </head>
+   <body>
+      <div class="container">
+      <br>
+      <div class="row">
+         <div class="col-lg-12">
+            <div class="panel panel-default">
+               <div class="panel-body">
+                  <h3 class="text-center" id="playerHeader"><strong>RPS Multiplayer</strong>Game Have Fun!</h3>
+                  <div class="form-group" id="playerWelcome">
+                     <div class="input-group">
+                        <input type="text" class="form-control" id="playerNameText">
+                        <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" id="PlayerStartSubmit">Go!</button>
+                        </span>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- Current Product -->
+         <div class="row">
+            <div class="col-lg-4">
+               <div class="panel panel-default">
+                  <div class="panel-body" id="player1Panel">
+                     <div class="row text-center" id="player1Selection">
+
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="col-lg-4">
+               <div class="panel panel-default">
+                  <div class="panel-body">
+                     <div class="row" id="gameResult">
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="col-lg-4">
+               <div class="panel panel-default">
+                  <div class="panel-body" id="player2Panel">
+                     <div class="row text-center" id="player2Selection">
+                   
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- Make Your Bid -->
+         <div class="row">
+            <div class="col-lg-12">
+               <div class="panel panel-default">
+                  <div class="panel-heading">
+                     <h3 class="panel-title">Chat Online</h3>
+                  </div>
+                  <div class="panel-body">
+                     <form>
+                        <div class="form-group">
+                           <label for="comment">Chat Transcript:</label>
+                           <textarea class="form-control" rows="5" id="chatTextArea"></textarea>
+                        </div>
+                        <div class="form-group">
+                           <label for="bidder-name">Chat here</label>
+                           <input class="form-control" id="chatInputText" type="text">
+                        </div>
+                        <button class="btn btn-primary" id="chatSubmit" type="submit">Submit</button>
+                     </form>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!-- JavaScript -->
+      <script src="./assets/javascript/game.js"></script>
+   </body>
+</html>
