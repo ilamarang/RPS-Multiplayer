@@ -28,6 +28,8 @@ database.ref().on("value", function(snapshot) {
 
 //Final Review and Game Reset
 
+console.log("Coming from Listner 1");
+
 if(snapshot.val().gameProgress.turn ===3 )
 {
 	    database.ref().child("/gameProgress/").update({
@@ -121,6 +123,7 @@ function setupWin (playerId,snapshot) {
 database.ref("/players").on("value", function(snapshot) {
 
 
+    console.log("Coming from Listner 2");
 
     $.each(["player1", "player2"], function(index, value) {
 
@@ -153,6 +156,7 @@ database.ref("/players").on("value", function(snapshot) {
 
 
             } else if (playerList.length === 1) {
+
                 database.ref().child("/gameProgress/").set({
 
                     turn: 0
@@ -160,22 +164,24 @@ database.ref("/players").on("value", function(snapshot) {
                 });
             }
 
-        } else {
-        	
-        }
+        } 
 
 
 
     })
 
-    database.ref("/gameProgress").on("value", function(snapshot) {
+});
 
+database.ref("/gameProgress").on("value", function(snapshot) {
+
+        console.log("Coming from Listner 3");
+        console.log(snapshot.val());
 
         if (snapshot.val().turn == 1)
 
-        {	
-        	//Clear all defaults
-		
+        {   
+            //Clear all defaults
+        
             //setup Player 1;
             console.log("My condition");
             if (whoAmI === "player1" && !buttonSet) {
@@ -187,8 +193,8 @@ database.ref("/players").on("value", function(snapshot) {
 
             //setup Player 2;
             //Clear all defaults
-		
-		
+        
+        
 
             if (whoAmI === "player2") {
                 buttonSet = true;
@@ -196,14 +202,12 @@ database.ref("/players").on("value", function(snapshot) {
             }
         } else if (snapshot.val().turn == 0){
 
-        	buttonSet = false;
-        	
+            buttonSet = false;
+            
         } 
 
 
     })
-    
-
     function pushIfNew(obj) {
         for (var i = 0; i < playerList.length; i++) {
             if (playerList[i].name === obj.name) { // modify whatever property you need
@@ -212,13 +216,6 @@ database.ref("/players").on("value", function(snapshot) {
         }
         playerList.push(obj);
     }
-
-
-    // If any errors are experienced, log them to console.
-}, function(errorObject) {
-    console.log("The read failed: " + errorObject.code);
-});
-
 
 //Player Start Button Click Event
 $("#PlayerStartSubmit").on("click", function() {
@@ -259,13 +256,7 @@ var setPlayer = function(playerId) {
 
     });
 
-    var presenceRef = firebase.database().ref("/players/" + playerId);
-    presenceRef.onDisconnect().remove(function(err) {
-
-    });
-
-    var turnRef = firebase.database().ref("/gameProgress");
-    turnRef.onDisconnect().update({turn:0});
+    
 }
 
 function setupGame(playerId) {
@@ -341,3 +332,26 @@ function calculateResultReset() {
 
 	console.log("Calculating Result")
 }
+
+$("#chatSubmit").on("click",function() {
+    database.ref("/chat/chatData").push({
+        user: $("#playerNameText").val(),
+        chatText: $("#chatInputText").val()
+
+
+    });
+
+});
+
+database.ref("/chat/chatData").on("child_added", function(snapshot) {
+console.log("Coming from Listner 4");
+
+
+console.log("Hello from Chat");
+var lastObj = snapshot.val();
+
+console.log(lastObj);
+
+$("#chatTextArea").val($("#chatTextArea").val() +lastObj.user + ": " + lastObj.chatText + "\n");
+
+});
