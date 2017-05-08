@@ -255,7 +255,13 @@ var setPlayer = function(playerId) {
         selection: ""
 
     });
+        var presenceRef = firebase.database().ref("/players/" + playerId);
+    presenceRef.onDisconnect().remove(function(err) {
 
+    });
+
+    var turnRef = firebase.database().ref("/gameProgress");
+    turnRef.onDisconnect().update({turn:0});
     
 }
 
