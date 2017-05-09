@@ -269,10 +269,11 @@ function setupGame(playerId) {
 
     //Create Buttons
     $.each(["Rock", "Paper", "Scissors"], function(index, value) {
-
-        var gameButton = $("<button class='btn btn-primary'> </button>").text(value);
+        var buttondiv = $("<div class='text-center center-block'> </div>");
+        var gameButton = $("<button class='btn btn-primary btn-block'> </button>").text(value);
         console.log("Hello");
-        $("#" + playerId + "Panel").append(gameButton);
+        $(buttondiv).prepend(gameButton);
+        $("#" + playerId + "Panel").append(buttondiv);
 
 
     });
@@ -339,13 +340,20 @@ function calculateResultReset() {
 	console.log("Calculating Result")
 }
 
-$("#chatSubmit").on("click",function() {
-    database.ref("/chat/chatData").push({
+$("#chatSubmit").on("click",function(e) {
+
+    e.preventDefault();
+    if($("#chatInputText").val() !="" )
+    {
+        database.ref("/chat/chatData").push({
         user: $("#playerNameText").val(),
         chatText: $("#chatInputText").val()
 
-
-    });
+        });
+     $("#chatInputText").val("");    
+    }
+    
+          
 
 });
 
@@ -359,5 +367,17 @@ var lastObj = snapshot.val();
 console.log(lastObj);
 
 $("#chatTextArea").val($("#chatTextArea").val() +lastObj.user + ": " + lastObj.chatText + "\n");
+
+});
+
+
+$(document).ready(function() {
+
+    //Assign functions to disconnect the database cleanly
+
+          var chatRef = firebase.database().ref("/chat/");
+          chatRef.onDisconnect().remove(function(err) {
+
+    });
 
 });

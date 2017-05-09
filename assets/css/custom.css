@@ -1,4 +1,8 @@
-.btn {
-	display: block;
+.center-block {
+	width: 10em;
 	
 }
+.btn-block {
+	margin-bottom: 1em;
+}
+
