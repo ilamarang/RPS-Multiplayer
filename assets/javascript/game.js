@@ -77,6 +77,9 @@ if(snapshot.val().gameProgress.turn ===3 )
 {	
 	$("#gameResultPanel").empty();
 	$("#playercurrentChoice").remove();
+    $("#resultDetails1").remove();
+    $("#resultDetails2").remove();
+
 	database.ref().child("/gameProgress/").update({
 
         turn:1
@@ -91,10 +94,18 @@ function setupWin (playerId,snapshot) {
 	console.log("Alright Here")
 	if(playerId==="player1") 
 	{
+        var player1WinCount = 0;
+        var player2LossCount = 0;
+        player2LossCount = parseInt(snapshot.val().players.player2.losses) + 1;
+        player1WinCount = parseInt(snapshot.val().players.player1.wins) + 1;
+
 		$("#gameResultPanel").append("<h1> "+  snapshot.val().players.player1.name + "  WINS!!</h1>");
+        $("#player2Selection").append("<h4 id='resultDetails2'> Wins:" + parseInt(snapshot.val().players.player2.wins) + " Losses:" + player2LossCount + "</h4>");
+        $("#player1Selection").append("<h4 id='resultDetails1'> Wins:" + player1WinCount + " Losses:" +  parseInt(snapshot.val().players.player1.losses) + "</h4>")
 		    database.ref().child("/players/player1").update({
 
         wins: snapshot.val().players.player1.wins + 1
+        
 
     });
 		    database.ref().child("/players/player2").update({
@@ -106,7 +117,15 @@ function setupWin (playerId,snapshot) {
 	}
 	else
 	{
-		$("#gameResultPanel").append("<h1> "+  snapshot.val().players.player2.name + "  WINS!!</h1>");	
+        var player2WinCount = 0;
+        var player1LossCount = 0;
+        player1LossCount = parseInt(snapshot.val().players.player1.losses) + 1;
+        player2WinCount = parseInt(snapshot.val().players.player2.wins) + 1;
+
+		$("#gameResultPanel").append("<h1> "+  snapshot.val().players.player2.name + "  WINS!!</h1>");
+        $("#player2Selection").append("<h4 id='resultDetails1'> Wins:" +  player2WinCount  + " Losses:" +  parseInt(snapshot.val().players.player2.losses) + "</h4>")
+        $("#player1Selection").append("<h4 id='resultDetails2'> Wins:" + parseInt(snapshot.val().players.player1.wins) + " Losses:" + player1LossCount + "</h4>")
+
 		database.ref().child("/players/player2").update({
         wins: snapshot.val().players.player2.wins + 1
 
@@ -118,6 +137,8 @@ function setupWin (playerId,snapshot) {
     });
 	}
 	
+    console.log(snapshot.val());
+
 }
 
 database.ref("/players").on("value", function(snapshot) {
@@ -252,17 +273,18 @@ var setPlayer = function(playerId) {
         name: $("#playerNameText").val(),
         wins: 0,
         losses: 0,
+        ties:0,
         selection: ""
 
     });
-        var presenceRef = firebase.database().ref("/players/" + playerId);
+        var presenceRef = firebase.database().ref("/players/");
     presenceRef.onDisconnect().remove(function(err) {
 
     });
 
     var turnRef = firebase.database().ref("/gameProgress");
     turnRef.onDisconnect().update({turn:0});
-    
+   
 }
 
 function setupGame(playerId) {
@@ -277,6 +299,8 @@ function setupGame(playerId) {
 
 
     });
+
+ 
 }
 
 $("#player1Panel").on("click", "button", function() {
