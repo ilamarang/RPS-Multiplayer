@@ -171,7 +171,7 @@ database.ref("/players").on("value", function(snapshot) {
 
             {
 
-                $("#" + value + "Selection").html("Waiting for " + value);
+                $("#" + value + "Selection").html("<h4> Waiting for " + value + "</h4>");
             }
             if (playerList.length === 2) {
 

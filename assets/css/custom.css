@@ -8,8 +8,9 @@
 
 body {
 	background-image: url("../images/bimage.png");
+	font-family: cursive
 }
 #player1Panel,#player2Panel {
-background-image: url("../images/panel1.jpg");
+background-image: url("../images/black.jpeg");
 color: white;	
 }
