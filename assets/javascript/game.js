@@ -79,7 +79,11 @@ if(snapshot.val().gameProgress.turn ===3 )
 	$("#playercurrentChoice").remove();
     $("#resultDetails1").remove();
     $("#resultDetails2").remove();
-
+    if(whoAmI=="player2")
+    {
+        $("#gameResultPanel").append("<h4 id='waitingMessage'> Waiting for Player1 to Choose </h4>");         
+    }
+    
 	database.ref().child("/gameProgress/").update({
 
         turn:1
@@ -92,6 +96,8 @@ if(snapshot.val().gameProgress.turn ===3 )
 
 function setupWin (playerId,snapshot) {
 	console.log("Alright Here")
+    $("#waitingMessage").remove();
+
 	if(playerId==="player1") 
 	{
         var player1WinCount = 0;
@@ -204,10 +210,14 @@ database.ref("/gameProgress").on("value", function(snapshot) {
             //Clear all defaults
         
             //setup Player 1;
-            console.log("My condition");
+        
             if (whoAmI === "player1" && !buttonSet) {
                 buttonSet = true;
                 setupGame("player1");
+            }
+            else
+            {
+
             }
 
         } else if (snapshot.val().turn == 2 && !buttonSet) {
@@ -219,7 +229,9 @@ database.ref("/gameProgress").on("value", function(snapshot) {
 
             if (whoAmI === "player2") {
                 buttonSet = true;
+                $("#waitingMessage").remove();
                 setupGame("player2");
+
             }
         } else if (snapshot.val().turn == 0){
 
@@ -318,12 +330,13 @@ $("#player1Panel").on("click", "button", function() {
         selection: buttonText
 
     });
-
+    $("#gameResultPanel").append("<h4 id='waitingMessage'> Waiting for Player2 to Choose </h4>");    
+        
 });
 
 
 $("#player2Panel").on("click", "button", function() {
-    console.log("Button Click from Player 1");
+    
     
     var buttonText = $(this).text();
     $("#player2Panel .btn").remove();

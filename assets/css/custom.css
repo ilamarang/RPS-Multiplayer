@@ -9,3 +9,7 @@
 body {
 	background-image: url("../images/bimage.png");
 }
+#player1Panel,#player2Panel {
+background-image: url("../images/panel1.jpg");
+color: white;	
+}
